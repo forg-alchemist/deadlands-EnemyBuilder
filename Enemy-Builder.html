@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Deadlands: Конструктор врагов</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/picker.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="app-header">
+        <div>
+          <p class="kicker">Deadlands / SWADE</p>
+          <h1>Конструктор врагов</h1>
+        </div>
+        <div class="header-actions no-print">
+          <button type="button" data-action="copyBlock" title="Скопировать статблок">Копировать</button>
+          <button type="button" data-action="print" title="Печать">Печать</button>
+          <button type="button" data-action="export" title="Сохранить JSON">Экспорт</button>
+          <label class="file-button" title="Загрузить JSON">
+            Импорт
+            <input type="file" accept="application/json" data-action="import" />
+          </label>
+        </div>
+      </header>
+
+      <section class="top-row">
+        <section class="paper identity-panel">
+          <div class="section-head">
+            <h2>Кто это</h2>
+            <label class="tier-select">
+              <span>Уровень</span>
+              <select data-bind="enemyTier">
+                <option>Статист</option>
+                <option>Опытный</option>
+                <option>Капитан</option>
+                <option>Дикая карта</option>
+              </select>
+            </label>
+          </div>
+          <div class="field-grid">
+            <label class="wide">
+              <span>Имя</span>
+              <input data-bind="name" placeholder="Безымянный стрелок" autocomplete="off" />
+            </label>
+            <label>
+              <span>Тип</span>
+              <select data-bind="kind">
+                <option>Человек</option>
+                <option>Животное</option>
+                <option>Нежить</option>
+                <option>Маниту</option>
+                <option>Конструкт</option>
+                <option>Монстр</option>
+              </select>
+            </label>
+            <label>
+              <span>Ранг</span>
+              <select data-bind="rank">
+                <option>Новичок</option>
+                <option>Закаленный</option>
+                <option>Ветеран</option>
+                <option>Герой</option>
+                <option>Легенда</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <section class="toolbar paper no-print">
+          <label>
+            <span>Шаблон</span>
+            <select data-action="preset">
+              <option value="">Своя тварь</option>
+            </select>
+          </label>
+          <div class="toolbar-actions">
+            <button type="button" data-action="randomize">Быстрый враг</button>
+            <button type="button" data-action="reset">Сбросить</button>
+          </div>
+          <output class="save-status" data-output="saveStatus">Сохранено локально</output>
+        </section>
+      </section>
+
+      <div class="workspace">
+        <section class="left-column">
+          <section class="portrait-aside paper">
+            <label class="portrait-frame">
+              <span class="portrait-placeholder">Загрузить арт врага</span>
+              <input type="file" accept="image/*" data-action="uploadArt" />
+            </label>
+          </section>
+
+          <section class="paper trait-panel">
+            <div class="section-head">
+              <h2>Параметры</h2>
+              <button type="button" data-action="normalizeTraits">Выровнять</button>
+            </div>
+            <div class="traits-grid" data-traits></div>
+          </section>
+
+          <section class="paper skill-panel">
+            <div class="section-head">
+              <h2>Навыки</h2>
+              <button type="button" data-action="addSkill">Добавить</button>
+            </div>
+            <div class="skill-list" data-skills></div>
+          </section>
+        </section>
+
+        <section class="center-column">
+          <section class="score-panel">
+            <article class="score-card paper">
+              <img src="assets/Protection+.png" alt="" />
+              <span>Защита</span>
+              <output data-output="parry">2</output>
+            </article>
+            <article class="score-card paper">
+              <img src="assets/Durability+.png" alt="" />
+              <span>Стойкость</span>
+              <output data-output="toughness">4</output>
+            </article>
+            <article class="score-card paper">
+              <img src="assets/Boots.png" alt="" />
+              <span>Шаг</span>
+              <output data-output="pace">3</output>
+            </article>
+            <article class="score-card paper">
+              <img src="assets/Run.png" alt="" />
+              <span>Бег</span>
+              <output data-output="runDie">d4</output>
+            </article>
+          </section>
+
+          <section class="paper combat-panel">
+            <div class="section-head">
+              <h2>Боевые правки</h2>
+              <span class="hint">Защита и Стойкость используют только формулу и ручные модификаторы</span>
+            </div>
+            <div class="field-grid compact">
+              <label>
+                <span>Мод. защиты</span>
+                <input type="number" data-bind="parryBonus" min="-6" max="12" step="1" />
+              </label>
+              <label>
+                <span>Мод. стойкости</span>
+                <input type="number" data-bind="toughnessBonus" min="-6" max="20" step="1" />
+              </label>
+              <label>
+                <span>Размер</span>
+                <input type="number" data-bind="size" min="-4" max="8" step="1" />
+              </label>
+              <label>
+                <span>Мод. шага</span>
+                <input type="number" data-bind="paceBonus" min="-12" max="24" step="1" />
+              </label>
+              <label>
+                <span>Мод. бега</span>
+                <select data-bind="runStepBonus" data-value-type="number">
+                  <option value="-1">-1 ступень (d2)</option>
+                  <option value="0">Стандарт (d4)</option>
+                  <option value="1">+1 ступень (d6)</option>
+                  <option value="2">+2 ступени (d8)</option>
+                  <option value="3">+3 ступени (d10)</option>
+                  <option value="4">+4 ступени (d12)</option>
+                </select>
+              </label>
+              <label>
+                <span>Страх</span>
+                <input data-bind="fear" placeholder="- / -2 / -4" />
+              </label>
+            </div>
+          </section>
+
+          <section class="catalog-pair">
+            <section class="paper choice-panel">
+              <div class="section-head">
+                <h2>Изъяны</h2>
+                <button type="button" data-action="openPicker" data-type="hindrances">+ Добавить</button>
+              </div>
+              <div class="choice-list" data-catalog-list="hindrances"></div>
+            </section>
+
+            <section class="paper choice-panel">
+              <div class="section-head">
+                <h2>Черты</h2>
+                <button type="button" data-action="openPicker" data-type="edges">+ Добавить</button>
+              </div>
+              <div class="choice-list" data-catalog-list="edges"></div>
+            </section>
+          </section>
+
+          <section class="paper table-panel">
+            <div class="section-head">
+              <h2>Оружие</h2>
+              <button type="button" data-action="openPicker" data-type="weapons">+ Добавить</button>
+            </div>
+            <div class="choice-list" data-catalog-list="weapons"></div>
+          </section>
+
+          <section class="paper table-panel armor-panel">
+            <div class="section-head">
+              <h2>Броня</h2>
+              <button type="button" data-action="openPicker" data-type="armor">+ Добавить</button>
+            </div>
+            <div class="armor-panel-layout">
+              <div class="armor-sector-board enemy-armor-board" aria-label="Броня по секторам">
+                <img src="assets/Armor.png" alt="" />
+                <output data-output="armorHead" class="armor-sector-value armor-sector-value--head">0</output>
+                <output data-output="armorTorso" class="armor-sector-value armor-sector-value--torso">0</output>
+                <output data-output="armorArms" class="armor-sector-value armor-sector-value--arms">0</output>
+                <output data-output="armorLegs" class="armor-sector-value armor-sector-value--legs">0</output>
+              </div>
+              <div class="armor-panel-main">
+                <div class="armor-bonus-grid">
+                  <label>
+                    <span>Голова</span>
+                    <input type="number" data-bind="armorBonusHead" min="-20" max="20" step="1" />
+                  </label>
+                  <label>
+                    <span>Торс</span>
+                    <input type="number" data-bind="armorBonusTorso" min="-20" max="20" step="1" />
+                  </label>
+                  <label>
+                    <span>Руки</span>
+                    <input type="number" data-bind="armorBonusArms" min="-20" max="20" step="1" />
+                  </label>
+                  <label>
+                    <span>Ноги</span>
+                    <input type="number" data-bind="armorBonusLegs" min="-20" max="20" step="1" />
+                  </label>
+                </div>
+                <div class="choice-list" data-catalog-list="armor"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="paper attack-panel">
+            <div class="section-head">
+              <h2>Атаки</h2>
+              <button type="button" data-action="addAttack">Добавить</button>
+            </div>
+            <div class="attack-list" data-attacks></div>
+          </section>
+
+          <section class="paper ability-panel">
+            <div class="section-head">
+              <h2>Особенности</h2>
+              <button type="button" data-action="addAbility">Добавить</button>
+            </div>
+            <div class="ability-list" data-abilities></div>
+          </section>
+
+          <section class="paper notes-panel">
+            <div class="section-head">
+              <h2>Заметки маршала</h2>
+              <span class="badge" data-output="threat">Обычный</span>
+            </div>
+            <textarea data-bind="notes" placeholder="Тактика, улики, слабости, добыча..."></textarea>
+          </section>
+        </section>
+      </div>
+    </main>
+
+    <div id="picker-modal" hidden>
+      <div class="picker-backdrop" data-action="closePicker"></div>
+      <div class="picker-dialog paper">
+        <div class="picker-header">
+          <h3 class="picker-title"></h3>
+          <button type="button" class="picker-close" data-action="closePicker">×</button>
+        </div>
+        <input type="text" class="picker-search" placeholder="Поиск..." autocomplete="off" />
+        <div class="picker-list"></div>
+      </div>
+    </div>
+
+    <script src="js/catalogs/hindrances.js"></script>
+    <script src="js/catalogs/edges.js"></script>
+    <script src="js/catalogs/weapons.js"></script>
+    <script src="js/catalogs/armor.js"></script>
+    <script src="js/constants.js" defer></script>
+    <script src="js/presets.js" defer></script>
+    <script src="js/utils.js" defer></script>
+    <script src="js/state.js" defer></script>
+    <script src="js/catalogHelpers.js" defer></script>
+    <script src="js/calculations.js" defer></script>
+    <script src="js/render.js" defer></script>
+    <script src="js/actions.js" defer></script>
+    <script src="js/picker/catalogPicker.js" defer></script>
+    <script src="js/app.js" defer></script>
+  </body>
+</html>
